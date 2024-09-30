@@ -13,13 +13,16 @@ public class ScheduleResponseDto {
     private String date;
     private String createDate;
     private String modifiedDate;
+    private String password;
 
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.name = schedule.getName();
         this.schedule = schedule.getSchedule();
         this.date = schedule.getDate();
+        this.password = schedule.getPassword();
         this.createDate = schedule.getCreateDate();
         this.modifiedDate = schedule.getModifiedDate();
+
     }
 }

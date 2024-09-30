@@ -13,24 +13,24 @@
 ## 3. 일정 수정
 - **URL** : '/api/schedule/{id}'
 - **Method** : PUT
-- **Return** :
+- **Return** : Long
 
 ## 4. 일정 삭제
 - **URL** :'/api/schedule/{id}'
 - **Method** : DELETE
-- **Return** :
+- **Return** : Long
 
 ---
 # ERD
 
 ## 개체
-- 일정
-- 사용자
+- Schedule
+- Users
 ## 속성
-- 일정 : 작성자, 내용, 작성일, 수정일
-- 사용자 : 작성자
+- Schedule : Schedule_id, name, date, schedule, password, create_date, modified_date 
+- Users : user_id, name
 ## 관계
 - 사용자는 일정을 작성, 조회, 수정, 삭제할 수 있다.
 
-![ERD](https://ifh.cc/v-bjmwNF)
+![ERD](https://ifh.cc/v-TYyqdZ)
  
