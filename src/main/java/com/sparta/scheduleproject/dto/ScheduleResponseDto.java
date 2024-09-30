@@ -19,7 +19,7 @@ public class ScheduleResponseDto {
         this.name = schedule.getName();
         this.schedule = schedule.getSchedule();
         this.date = schedule.getDate();
-        this.createDate = LocalDateTime.now().toString();
-        this.modifiedDate = this.createDate;
+        this.createDate = schedule.getCreateDate();
+        this.modifiedDate = schedule.getModifiedDate();
     }
 }

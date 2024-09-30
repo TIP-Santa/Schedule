@@ -34,4 +34,26 @@ public class ScheduleController {
         return responseList;
     }
 
+    @PutMapping("schedule/{id}")
+    public Long modifySchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
+        if(scheduleList.containsKey(id)) {
+            Schedule schedule = scheduleList.get(id);
+            schedule.update(requestDto);
+            return schedule.getId();
+        } else {
+            throw new IllegalArgumentException("해당 스케줄은 존재하지 않습니다.");
+        }
+
+    }
+
+    @DeleteMapping("/schedule/{id}")
+    public Long deleteSchedule(@PathVariable Long id) {
+        if(scheduleList.containsKey(id)) {
+            scheduleList.remove(id);
+            return id;
+        } else {
+            throw new IllegalArgumentException("해당 스케줄은 존재하지 않습니다.");
+        }
+    }
+
 }
