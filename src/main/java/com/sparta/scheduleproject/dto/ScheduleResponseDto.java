@@ -26,12 +26,11 @@ public class ScheduleResponseDto {
 
     }
 
-    public ScheduleResponseDto(Long id, String name, String date, String schedule, String password, String createDate, String modifiedDate) {
+    public ScheduleResponseDto(Long id, String name, String date, String schedule, String createDate, String modifiedDate) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.schedule = schedule;
-        this.password = password;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
     }

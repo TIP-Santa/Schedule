@@ -25,14 +25,19 @@ public class ScheduleController {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    // 일정 작성
     @PostMapping("/schedule")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto) {
         Schedule schedule = new Schedule(requestDto);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
+        // 작성에 필요한 데이터 : name, date, schedule, password
+        // 작성하지 않고 자동으로 들어가는 데이터 : id(schedule_key), create_date, modified_date
         String sql = "Insert into schedule(name, date, schedule, password) values(?,?,?,?)";
 
+        // 위 코드의 ?부분에 들어가는 데이터
+        // 각 숫자는 ?의 위치를 의미
         jdbcTemplate.update( con -> {
                     PreparedStatement preparedStatement = con.prepareStatement(sql,
                             Statement.RETURN_GENERATED_KEYS);
@@ -49,24 +54,72 @@ public class ScheduleController {
         return ResponseDto;
     }
 
-    @GetMapping("/schedule")
-    public List<ScheduleResponseDto> getSchedules() {
 
-        String sql = "select * from schedule";
-        return jdbcTemplate.query(sql, new RowMapper<ScheduleResponseDto>() {
+    // 일정 조회
+    // requestParam 방식을 사용하여 조회 조건인 name이나 date가 없어도 조회가 가능
+    // 전체 일정 조회 : localhost:8080/api/schedule
+    // 특정 사용자 조회 : localhost:8080/api/schedule?name={name}
+    // 특정 일정 조회 : localhost:8080/api/schedule?date={YYYY-MM-DD}
+    // 특정 사용자의 특정 일정 조회 : localhost:8080/api/schedule?name={name}&date={YYYY-MM-DD}
+    // 특정 단건 일정 조회 : localhost:8080/api/schedule?id={id}
+    @GetMapping("/schedule")
+    public List<ScheduleResponseDto> getSchedule(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String date,
+            @RequestParam(required = false) String id) {
+
+        StringBuilder sql = new StringBuilder("select * from schedule where 1=1");
+        List<Object> params = new ArrayList<>();
+        // name 데이터가 존재한다면 name을 기준 조건 추가
+        if (name != null) {
+            sql.append(" and name = ?");
+            params.add(name);
+        }
+        // date 데이터가 존재한다면 date 기준 조건 추가
+        if (date != null) {
+            sql.append(" and date = ?");
+            params.add(date);
+        }
+        // id 데이터가 존재한다면 id 기준 조건 추가
+        if (id != null) {
+            sql.append(" and schedule_key = ?");
+            params.add(id);
+        }
+        sql.append(" order by date desc");
+        return jdbcTemplate.query(sql.toString(), params.toArray(), new RowMapper<ScheduleResponseDto>() {
             @Override
             public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Long id = rs.getLong("schedule_key");
                 String name = rs.getString("name");
                 String date = rs.getString("date");
                 String schedule = rs.getString("schedule");
-                String password = rs.getString("password");
                 String createDate = rs.getString("create_date");
                 String modifiedDate = rs.getString("modified_date");
-                return new ScheduleResponseDto(id, name, date, schedule, password, createDate, modifiedDate);
+                return new ScheduleResponseDto(id, name, date, schedule, createDate, modifiedDate);
             }
         });
+
+
+
+
+
+//        String sql = new String("select * from schedule where name = ? and date = ?").toString();
+//        return jdbcTemplate.query(sql, new Object[]{name, date}, new RowMapper<ScheduleResponseDto>() {
+//            @Override
+//            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+//                Long id = rs.getLong("schedule_key");
+//                String name = rs.getString("name");
+//                String date = rs.getString("date");
+//                String schedule = rs.getString("schedule");
+//                String password = rs.getString("password");
+//                String createDate = rs.getString("create_date");
+//                String modifiedDate = rs.getString("modified_date");
+//                return new ScheduleResponseDto(id, name, date, schedule, password, createDate, modifiedDate);
+//            }
+//        });
     }
+
+
 
     @PutMapping("schedule/{id}")
     public Long modifySchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
