@@ -129,13 +129,26 @@ public class ScheduleController {
         }
     }
 
-    @DeleteMapping("/schedule/{id}")
-    public Long deleteSchedule(@PathVariable Long id) {
+    // 일정 삭제
+    // id(schedule_key)와 password 가 필요
+    // 입력 형식 : localhost:8080/api/schedule/{id}/password/{password}
+    @DeleteMapping("/schedule/{id}/password/{password}")
+    public Long deleteSchedule(@PathVariable Long id, @PathVariable String password) {
         Schedule schedule = findById(id);
         if(schedule != null) {
-            String sql = "delete from schedule where id = ?";
-            jdbcTemplate.update(sql, id);
-            return id;
+            // sql db에 저장된 password 를 확인
+            String schedulePasswordSql = "select password from schedule where schedule_key = ?";
+            String schedulePassword = jdbcTemplate.queryForObject(schedulePasswordSql, new Object[]{id}, String.class);
+            // 저장된 password 와 입력된 password 를 비교
+            if(schedulePassword != null && schedulePassword.equals(password)) {
+                // password 가 일치할 경우 삭제 로직 실행
+                String sql = "delete from schedule where schedule_key = ?";
+                jdbcTemplate.update(sql, id);
+                return id;
+            } else {
+                // password 불일치할 경우 예외처리
+                throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            }
         } else {
             throw new IllegalArgumentException("해당 스케줄은 존재하지 않습니다.");
         }
