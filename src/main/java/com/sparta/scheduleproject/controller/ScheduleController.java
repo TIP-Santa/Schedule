@@ -3,6 +3,8 @@ package com.sparta.scheduleproject.controller;
 import com.sparta.scheduleproject.dto.ScheduleRequestDto;
 import com.sparta.scheduleproject.dto.ScheduleResponseDto;
 import com.sparta.scheduleproject.entity.Schedule;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -98,37 +100,30 @@ public class ScheduleController {
                 return new ScheduleResponseDto(id, name, date, schedule, createDate, modifiedDate);
             }
         });
-
-
-
-
-
-//        String sql = new String("select * from schedule where name = ? and date = ?").toString();
-//        return jdbcTemplate.query(sql, new Object[]{name, date}, new RowMapper<ScheduleResponseDto>() {
-//            @Override
-//            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-//                Long id = rs.getLong("schedule_key");
-//                String name = rs.getString("name");
-//                String date = rs.getString("date");
-//                String schedule = rs.getString("schedule");
-//                String password = rs.getString("password");
-//                String createDate = rs.getString("create_date");
-//                String modifiedDate = rs.getString("modified_date");
-//                return new ScheduleResponseDto(id, name, date, schedule, password, createDate, modifiedDate);
-//            }
-//        });
     }
 
 
-
+    // 일정 수정
+    // 작성자명과 일정만 수정 가능
+    // 비밀번호가 일치할 경우에만 수정 가능
+    // 입력 형식 {name : {name}, schedule :{schedule}, password : {password}}
     @PutMapping("schedule/{id}")
     public Long modifySchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
         Schedule schedule = findById(id);
         if (schedule != null) {
-            String sql = "update schedule set name = ?, date = ?, schedule = ?, password = ?, modified_date = ? where schedule_key = ?";
-            jdbcTemplate.update(sql, requestDto.getName(), requestDto.getDate(), requestDto.getSchedule(), requestDto.getPassword(), LocalDateTime.now(), id);
-
-            return id;
+            // sql db에 저장된 password 를 확인
+            String schedulePasswordSql = "select password from schedule where schedule_key = ?";
+            String schedulePassword = jdbcTemplate.queryForObject(schedulePasswordSql, new Object[]{id}, String.class);
+            // 저장된 password 와 입력된 password 를 비교
+            if(schedulePassword != null && schedulePassword.equals(requestDto.getPassword())) {
+                // password 가 일치할 경우 수정 로직 실행
+                String sql = "update schedule set name = ?, schedule = ?, modified_date = ? where schedule_key = ?";
+                jdbcTemplate.update(sql, requestDto.getName(), requestDto.getSchedule(), LocalDateTime.now(), id);
+                return id;
+            } else {
+                // password 불일치할 경우 예외처리
+                throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            }
         } else {
             throw new IllegalArgumentException("해당 스케줄은 존재하지 않습니다.");
         }
