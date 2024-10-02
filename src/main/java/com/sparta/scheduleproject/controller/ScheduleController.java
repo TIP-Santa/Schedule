@@ -12,16 +12,14 @@ import java.util.List;
 @RequestMapping("/api")
 public class ScheduleController {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final ScheduleService scheduleService;
     public ScheduleController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        this.scheduleService = new ScheduleService(jdbcTemplate);
     }
 
     // 일정 작성
     @PostMapping("/schedule")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto) {
-
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.createSchedule(requestDto);
     }
 
@@ -37,7 +35,6 @@ public class ScheduleController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String date,
             @RequestParam(required = false) String id) {
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.getSchedules(name , date, id);
     }
 
@@ -47,7 +44,6 @@ public class ScheduleController {
     // 입력 형식 {name : {name}, schedule :{schedule}, password : {password}}
     @PutMapping("schedule/{id}")
     public Long modifySchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.updateSchedule(id, requestDto);
     }
 
@@ -56,7 +52,6 @@ public class ScheduleController {
     // 입력 형식 : localhost:8080/api/schedule/{id}/password/{password}
     @DeleteMapping("/schedule/{id}/password/{password}")
     public Long deleteSchedule(@PathVariable Long id, @PathVariable String password) {
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.deleteSchedule(id, password);
     }
 }

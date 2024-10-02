@@ -10,26 +10,24 @@ import java.util.List;
 
 public class ScheduleService {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final ScheduleRepository scheduleRepository;
+
     public ScheduleService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        this.scheduleRepository = new ScheduleRepository(jdbcTemplate);
     }
 
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {
         Schedule schedule = new Schedule(requestDto);
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
         Schedule saveSchedule =  scheduleRepository.save(schedule);
         ScheduleResponseDto ResponseDto = new ScheduleResponseDto(schedule);
         return ResponseDto;
     }
 
     public List<ScheduleResponseDto> getSchedules(String name, String date, String id) {
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
         return scheduleRepository.findAll(name, date, id);
     }
 
     public Long updateSchedule(Long id, ScheduleRequestDto requestDto) {
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
         Schedule schedule = scheduleRepository.findById(id);
         if (schedule != null) {
             scheduleRepository.update(id, requestDto);
@@ -40,7 +38,6 @@ public class ScheduleService {
     }
 
     public Long deleteSchedule(Long id, String password) {
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
         Schedule schedule = scheduleRepository.findById(id);
         if(schedule != null) {
             scheduleRepository.delete(id, password);
