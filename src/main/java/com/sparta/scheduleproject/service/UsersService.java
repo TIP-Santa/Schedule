@@ -6,8 +6,6 @@ import com.sparta.scheduleproject.entity.Users;
 import com.sparta.scheduleproject.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class UsersService {
 

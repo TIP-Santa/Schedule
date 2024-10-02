@@ -16,6 +16,7 @@ public class ScheduleService {
         this.scheduleRepository = scheduleRepository;
     }
 
+    // 생성 (POST)
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {
         Schedule schedule = new Schedule(requestDto);
         Schedule saveSchedule =  scheduleRepository.save(schedule);
@@ -23,25 +24,28 @@ public class ScheduleService {
         return responseDto;
     }
 
-    public List<ScheduleResponseDto> getSchedules(String name, String date, String id) {
-        return scheduleRepository.findAll(name, date, id);
+    // 조회 (GET)
+    public List<ScheduleResponseDto> getSchedules(String userId, String name, String date, Long scheduleKey) {
+        return scheduleRepository.findAll(userId, name, date, scheduleKey);
     }
 
-    public Long updateSchedule(Long id, ScheduleRequestDto requestDto) {
-        Schedule schedule = scheduleRepository.findById(id);
+    // 수정 (PUT)
+    public Long updateSchedule(Long scheduleKey, String password, ScheduleRequestDto requestDto) {
+        Schedule schedule = scheduleRepository.findById(scheduleKey);
         if (schedule != null) {
-            scheduleRepository.update(id, requestDto);
-            return id;
+            scheduleRepository.update(scheduleKey, password, requestDto);
+            return scheduleKey;
         } else {
             throw new IllegalArgumentException("해당 스케줄은 존재하지 않습니다.");
         }
     }
 
-    public Long deleteSchedule(Long id, String password) {
-        Schedule schedule = scheduleRepository.findById(id);
+    // 삭제 (DELETE)
+    public Long deleteSchedule(Long scheduleKey, String password) {
+        Schedule schedule = scheduleRepository.findById(scheduleKey);
         if(schedule != null) {
-            scheduleRepository.delete(id, password);
-            return id;
+            scheduleRepository.delete(scheduleKey, password);
+            return scheduleKey;
         } else {
             throw new IllegalArgumentException("해당 스케줄은 존재하지 않습니다.");
         }

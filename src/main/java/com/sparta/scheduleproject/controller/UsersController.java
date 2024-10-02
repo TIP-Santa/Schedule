@@ -5,8 +5,6 @@ import com.sparta.scheduleproject.dto.UsersResponseDto;
 import com.sparta.scheduleproject.service.UsersService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/user")
 public class UsersController {
