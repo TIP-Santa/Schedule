@@ -12,6 +12,7 @@ import java.util.List;
 public class UsersService {
 
     private final UsersRepository usersRepository;
+
     public UsersService(UsersRepository usersRepository){
         this.usersRepository = usersRepository;
     }
@@ -30,5 +31,25 @@ public class UsersService {
 
     public UsersResponseDto getUser(String userId, String password) {
         return usersRepository.findUser(userId, password);
+    }
+
+    public String updateUser(String userId, String password, UsersRequestDto requestDto) {
+        Users users = usersRepository.findByIdAndPassword(userId, password);
+        if(users != null) {
+            usersRepository.update(userId, password, requestDto);
+            return userId;
+        } else {
+            throw new IllegalArgumentException("해당 유저가 존재하지 않습니다.");
+        }
+    }
+
+    public String deleteUser(String userId, String password) {
+        Users users = usersRepository.findByIdAndPassword(userId, password);
+        if(users != null) {
+            usersRepository.delete(userId, password);
+            return userId;
+        } else {
+            throw new IllegalArgumentException("해당 유저가 존재하지 않습니다.");
+        }
     }
 }

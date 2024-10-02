@@ -26,13 +26,30 @@ public class UsersController {
 
     // 유저 정보 조회
     // id와 password 로 정보 조회
+    // user/{userId}/password/{password}
+    // 특정 유저만 조회하는 것이기 때문에 List 가 아니라 단건 조회 형식으로 변경
     @GetMapping("/{userId}/password/{password}")
     public UsersResponseDto getUser(@PathVariable String userId, @PathVariable String password) {
-        System.out.println("Searching for userId: " + userId + ", password: " + password);
         return usersService.getUser(userId, password);
     }
 
+    // 유저 정보 수정
+    // id와 password 가 일치해야 수정 가능
+    // user/{userId}/password/{password}
+    @PutMapping("/{userId}/password/{password}")
+    public String modifiedUser(
+            @PathVariable String userId,
+            @PathVariable String password,
+            @RequestBody UsersRequestDto requestDto) {
+        System.out.println("입력된 비밀번호 : " + password);
+        return usersService.updateUser(userId, password, requestDto);
+    }
 
+    // 유저 정보 삭제
+    @DeleteMapping("/{userId}/password/{password}")
+    public String deleteUser(@PathVariable String userId, @PathVariable String password) {
+        return usersService.deleteUser(userId, password);
+    }
 
 
 

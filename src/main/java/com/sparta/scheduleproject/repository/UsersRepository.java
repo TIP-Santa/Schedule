@@ -1,5 +1,6 @@
 package com.sparta.scheduleproject.repository;
 
+import com.sparta.scheduleproject.dto.UsersRequestDto;
 import com.sparta.scheduleproject.dto.UsersResponseDto;
 import com.sparta.scheduleproject.entity.Users;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 @Repository
 public class UsersRepository {
@@ -55,6 +55,48 @@ public class UsersRepository {
             String name = rs.getString("name");
             String email = rs.getString("email");
             return new UsersResponseDto(userId, name, email);
+            }
+        });
+    }
+
+    public void update(String userId, String password, UsersRequestDto RequestDto) {
+        String userPasswordSql = "select password from users where user_id = ?";
+        String userPassword = jdbcTemplate.queryForObject(userPasswordSql, new Object[]{userId}, String.class);
+        System.out.println(userPassword);
+        if(userPassword != null && userPassword.equals(password)) {
+            String sql = "update users set name = ?, email = ? where user_id = ?";
+            jdbcTemplate.update(sql, RequestDto.getName(), RequestDto.getEmail(), userId);
+        } else {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+    }
+
+    public void delete(String userId, String password) {
+        String userPasswordSql = "select password from users where user_id = ?";
+        String userPassword = jdbcTemplate.queryForObject(userPasswordSql, new Object[]{userId}, String.class);
+
+        if(userPassword != null && userPassword.equals(password)) {
+            String sql = "delete from users where user_id = ?";
+            jdbcTemplate.update(sql, userId);
+        } else {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+    }
+
+
+
+    public Users findByIdAndPassword(String userId, String password) {
+        String sql = "select * from users where user_id = ? and password = ?";
+        return jdbcTemplate.query(sql, new Object[]{userId, password}, resultSet -> {
+            if(resultSet.next()) {
+                Users users = new Users();
+                users.setUserId(resultSet.getString("user_id"));
+                users.setName(resultSet.getString("name"));
+                users.setPassword(resultSet.getString("password"));
+                users.setEmail(resultSet.getString("email"));
+                return users;
+            } else {
+                return null;
             }
         });
     }
