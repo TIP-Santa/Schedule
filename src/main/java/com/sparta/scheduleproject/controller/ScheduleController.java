@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/schedule")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -18,7 +18,7 @@ public class ScheduleController {
     }
 
     // 일정 작성
-    @PostMapping("/schedule")
+    @PostMapping
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto) {
         return scheduleService.createSchedule(requestDto);
     }
@@ -30,7 +30,7 @@ public class ScheduleController {
     // 특정 일정 조회 : localhost:8080/api/schedule?date={YYYY-MM-DD}
     // 특정 사용자의 특정 일정 조회 : localhost:8080/api/schedule?name={name}&date={YYYY-MM-DD}
     // 특정 단건 일정 조회 : localhost:8080/api/schedule?id={id}
-    @GetMapping("/schedule")
+    @GetMapping
     public List<ScheduleResponseDto> getSchedule(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String date,
@@ -42,7 +42,7 @@ public class ScheduleController {
     // 작성자명과 일정만 수정 가능
     // 비밀번호가 일치할 경우에만 수정 가능
     // 입력 형식 {name : {name}, schedule :{schedule}, password : {password}}
-    @PutMapping("schedule/{id}")
+    @PutMapping("{id}")
     public Long modifySchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
         return scheduleService.updateSchedule(id, requestDto);
     }
@@ -50,7 +50,7 @@ public class ScheduleController {
     // 일정 삭제
     // id(schedule_key)와 password 가 필요
     // 입력 형식 : localhost:8080/api/schedule/{id}/password/{password}
-    @DeleteMapping("/schedule/{id}/password/{password}")
+    @DeleteMapping("/{id}/password/{password}")
     public Long deleteSchedule(@PathVariable Long id, @PathVariable String password) {
         return scheduleService.deleteSchedule(id, password);
     }

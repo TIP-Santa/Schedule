@@ -12,7 +12,6 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-
     public ScheduleService(ScheduleRepository scheduleRepository) {
         this.scheduleRepository = scheduleRepository;
     }
@@ -20,8 +19,8 @@ public class ScheduleService {
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {
         Schedule schedule = new Schedule(requestDto);
         Schedule saveSchedule =  scheduleRepository.save(schedule);
-        ScheduleResponseDto ResponseDto = new ScheduleResponseDto(schedule);
-        return ResponseDto;
+        ScheduleResponseDto responseDto = new ScheduleResponseDto(schedule);
+        return responseDto;
     }
 
     public List<ScheduleResponseDto> getSchedules(String name, String date, String id) {

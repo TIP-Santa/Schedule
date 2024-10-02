@@ -3,8 +3,6 @@ package com.sparta.scheduleproject.dto;
 import com.sparta.scheduleproject.entity.Schedule;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
 public class ScheduleResponseDto {
     private Long id;
