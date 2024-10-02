@@ -7,15 +7,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class ScheduleRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -96,8 +97,8 @@ public class ScheduleRepository {
         // 저장된 password 와 입력된 password 를 비교
         if(schedulePassword != null && schedulePassword.equals(requestDto.getPassword())) {
             // password 가 일치할 경우 수정 로직 실행
-            String sql = "update schedule set name = ?, schedule = ?, modified_date = ? where schedule_key = ?";
-            jdbcTemplate.update(sql, requestDto.getName(), requestDto.getSchedule(), LocalDateTime.now(), id);
+            String sql = "update schedule set name = ?, schedule = ? where schedule_key = ?";
+            jdbcTemplate.update(sql, requestDto.getName(), requestDto.getSchedule(), id);
         } else {
             // password 불일치할 경우 예외처리
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");

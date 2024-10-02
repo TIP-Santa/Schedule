@@ -4,16 +4,17 @@ import com.sparta.scheduleproject.dto.ScheduleRequestDto;
 import com.sparta.scheduleproject.dto.ScheduleResponseDto;
 import com.sparta.scheduleproject.entity.Schedule;
 import com.sparta.scheduleproject.repository.ScheduleRepository;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
-    public ScheduleService(JdbcTemplate jdbcTemplate) {
-        this.scheduleRepository = new ScheduleRepository(jdbcTemplate);
+    public ScheduleService(ScheduleRepository scheduleRepository) {
+        this.scheduleRepository = scheduleRepository;
     }
 
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {

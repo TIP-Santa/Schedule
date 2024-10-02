@@ -23,8 +23,6 @@ public class Schedule {
         this.name = requestDto.getName();
         this.schedule = requestDto.getSchedule();
         this.date = requestDto.getDate();
-        this.createDate = LocalDateTime.now().toString();
-        this.modifiedDate = createDate;
         this.password = requestDto.getPassword();
     }
 
@@ -32,7 +30,6 @@ public class Schedule {
         this.name = requestDto.getName();
         this.schedule = requestDto.getSchedule();
         this.date = requestDto.getDate();
-        this.modifiedDate = LocalDateTime.now().toString();
         this.password = requestDto.getPassword();
     }
 }
