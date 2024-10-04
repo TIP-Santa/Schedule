@@ -27,19 +27,23 @@ public class ScheduleController {
     }
 
     // 일정 조회
-    // requestParam(required = false)로 빠진 데이터가 있어도 조회 가능
-    // 전체 조회 URL : localhost:8080/schedule
-    // 특정 일자 조회 : localhost:8080/schedule?date={date}
-    // 특정 작성자 조회 : localhost:8080/schedule?name={name}
-    // 특정 ID 조회 : localhost:8080/schedule?userid={userid}
-    // 다중 옵션 조회(예를 들어 일자 및 사용자 조회) : localhost:8080/schedule?date={date}&name={name}
+    // requestParam(required = false)로 설정된 userId, name, date, scheduleKey 는 입력되지 않아도 조회 가능
+    // requestParam 으로 설정된 page, scheduleList 는 필수 입력
+    // page = 페이지 번호, scheduleList = 한 페이지에 표기되는 일정 갯수
+    // 전체 조회 URL : localhost:8080/schedule?page={page}&scheduleList={schedule_list}
+    // 특정 일자 조회 : localhost:8080/schedule?page={page}&scheduleList={schedule_list}date={date}
+    // 특정 작성자 조회 : localhost:8080/schedule?page={page}&scheduleList={schedule_list}name={name}
+    // 특정 ID 조회 : localhost:8080/schedule?page={page}&scheduleList={schedule_list}userid={userid}
+    // 다중 옵션 조회(예를 들어 일자 및 사용자 조회) : localhost:8080/schedule?page={page}&scheduleList={schedule_list}date={date}&name={name}
     @GetMapping
     public List<ScheduleResponseDto> getSchedule(
             @RequestParam(required = false) String userId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String date,
-            @RequestParam(required = false) Long scheduleKey) {
-        return scheduleService.getSchedules(userId, name , date, scheduleKey);
+            @RequestParam(required = false) Long scheduleKey,
+            @RequestParam Long page,
+            @RequestParam Long scheduleList) {
+        return scheduleService.getSchedules(userId, name , date, scheduleKey, page, scheduleList);
     }
 
     // 일정 수정

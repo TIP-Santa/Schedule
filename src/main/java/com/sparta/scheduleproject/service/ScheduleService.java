@@ -25,8 +25,8 @@ public class ScheduleService {
     }
 
     // 조회 (GET)
-    public List<ScheduleResponseDto> getSchedules(String userId, String name, String date, Long scheduleKey) {
-        return scheduleRepository.findAll(userId, name, date, scheduleKey);
+    public List<ScheduleResponseDto> getSchedules(String userId, String name, String date, Long scheduleKey, Long page, Long scheduleList) {
+        return scheduleRepository.findAll(userId, name, date, scheduleKey, page, scheduleList);
     }
 
     // 수정 (PUT)

@@ -49,10 +49,11 @@ public class ScheduleRepository {
     }
 
     // DB 조회
-    public List<ScheduleResponseDto> findAll(String userId, String name, String date, Long scheduleKey) {
+    public List<ScheduleResponseDto> findAll(String userId, String name, String date, Long scheduleKey, Long page, Long scheduleList) {
         StringBuilder sql = new StringBuilder("select * from schedule where 1=1");
         List<Object> params = new ArrayList<>();
 
+        // sql 순서 : select - from - where - order by - limit - offset
         //  userId 데이터가 존재한다면 uesrId 기준 조건 추가
         if (userId != null) {
             sql.append(" and user_id = ?");
@@ -75,8 +76,21 @@ public class ScheduleRepository {
             sql.append(" and schedule_key = ?");
             params.add(scheduleKey);
         }
+
         // date 를 기준으로 내림차순 정렬
         sql.append(" order by date desc");
+
+        // page 당 출력되는 schedule 갯수
+        if(scheduleList != null) {
+            sql.append(" limit ?");
+            params.add(scheduleList);
+        }
+
+        // page 조건 추가
+        if(page != null) {
+            sql.append(" offset ?");
+            params.add((page-1) * scheduleList);
+        }
 
         return jdbcTemplate.query(sql.toString(), params.toArray(), new RowMapper<ScheduleResponseDto>() {
             @Override
