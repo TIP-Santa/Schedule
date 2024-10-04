@@ -15,6 +15,7 @@ public class UsersService {
         this.usersRepository = usersRepository;
     }
 
+    // 유저 정보 작성
     public UsersResponseDto createUser(UsersRequestDto requestDto) {
         Users users = new Users();
         users.setUserId(requestDto.getUserId());
@@ -26,11 +27,12 @@ public class UsersService {
         return new UsersResponseDto(saveUser);
     }
 
-
+    // 유저 정보 조회
     public UsersResponseDto getUser(String userId, String password) {
         return usersRepository.findUser(userId, password);
     }
 
+    // 유저 정보 수정
     public String updateUser(String userId, String password, UsersRequestDto requestDto) {
         Users users = usersRepository.findByIdAndPassword(userId, password);
         if(users != null) {
@@ -41,6 +43,7 @@ public class UsersService {
         }
     }
 
+    // 유저 정보 삭제
     public String deleteUser(String userId, String password) {
         Users users = usersRepository.findByIdAndPassword(userId, password);
         if(users != null) {

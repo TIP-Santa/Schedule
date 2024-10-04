@@ -31,11 +31,6 @@ public class ScheduleRepository {
         // 작성에 필요한 데이터 : userId, name, date, schedule, password
         // 작성하지 않고 자동으로 들어가는 데이터 : id(schedule_key), create_date, modified_date
         String sql = "Insert into schedule(user_id, name, date, schedule, password) values(?,?,?,?,?)";
-        System.out.println("User ID: " + schedule.getUserId());
-        System.out.println("Name: " + schedule.getName());
-        System.out.println("Date: " + schedule.getDate());
-        System.out.println("Schedule: " + schedule.getSchedule());
-        System.out.println("Password: " + schedule.getPassword());
         // 위 코드의 ?부분에 들어가는 데이터
         // 각 숫자는 ?의 위치를 의미
         jdbcTemplate.update( con -> {
@@ -60,7 +55,7 @@ public class ScheduleRepository {
 
         //  userId 데이터가 존재한다면 uesrId 기준 조건 추가
         if (userId != null) {
-            sql.append(" and userId = ?");
+            sql.append(" and user_id = ?");
             params.add(userId);
         }
         // name 데이터가 존재한다면 name 기준 조건 추가

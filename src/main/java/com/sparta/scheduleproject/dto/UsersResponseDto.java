@@ -24,9 +24,11 @@ public class UsersResponseDto {
         this.modifiedDate = users.getModifiedDate();
     }
 
-    public UsersResponseDto(String userId, String name, String email){
+    public UsersResponseDto(int uesrKey, String userId, String name, String email, String createDate){
+        this.userKey = uesrKey;
         this.userId = userId;
         this.name = name;
         this.email = email;
+        this.createDate = createDate;
     }
 }

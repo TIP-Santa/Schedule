@@ -21,7 +21,7 @@ public class UsersRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // DB 저장
+    // 유저 정보 저장
     public Users save(Users users) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -46,19 +46,23 @@ public class UsersRepository {
         return users;
     }
 
+    // 유저 정보 조회
     public UsersResponseDto findUser(String userId, String password) {
         String sql = "select * from users where user_id = ? and password = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{userId, password}, new RowMapper<UsersResponseDto>(){
             @Override
             public UsersResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+            int userKey = rs.getInt("user_key");
             String userId = rs.getString("user_id");
             String name = rs.getString("name");
             String email = rs.getString("email");
-            return new UsersResponseDto(userId, name, email);
+            String createDate = rs.getString("create_date");
+            return new UsersResponseDto(userKey, userId, name, email, createDate);
             }
         });
     }
 
+    // 유저 정보 수정
     public void update(String userId, String password, UsersRequestDto RequestDto) {
         String userPasswordSql = "select password from users where user_id = ?";
         String userPassword = jdbcTemplate.queryForObject(userPasswordSql, new Object[]{userId}, String.class);
@@ -71,6 +75,7 @@ public class UsersRepository {
         }
     }
 
+    // 유저 정보 삭제
     public void delete(String userId, String password) {
         String userPasswordSql = "select password from users where user_id = ?";
         String userPassword = jdbcTemplate.queryForObject(userPasswordSql, new Object[]{userId}, String.class);
