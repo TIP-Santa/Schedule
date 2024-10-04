@@ -48,7 +48,7 @@ public class ScheduleController {
     // 입력 형식 {name : {name}, schedule :{schedule}, password : {password}}
     // URL : localhost:8080/schedule?schedulekey={schedulekey}&password={password}
     @PutMapping
-    public Long modifySchedule(@RequestParam Long scheduleKey, @RequestParam String password, @RequestParam ScheduleRequestDto requestDto) {
+    public Long modifySchedule(@RequestParam Long scheduleKey, @RequestParam String password, @RequestBody ScheduleRequestDto requestDto) {
         return scheduleService.updateSchedule(scheduleKey, password, requestDto);
     }
 
